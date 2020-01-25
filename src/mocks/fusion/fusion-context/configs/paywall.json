@@ -1,0 +1,14 @@
+{
+  "arcSite": "gestion",
+  "contextPath": "",
+  "globalContent": {},
+  "globalContentConfig": {},
+  "isAdmin": false,
+  "outputType": "default",
+  "requestUri": "/suscripcionesdigitales/?_website=gestion&outputType=default",
+  "template": "page/p9kGju1KbU3MNr",
+  "layout": "paywall",
+  "key": "paywall",
+  "collection": "layouts",
+  "type": "paywall"
+}
