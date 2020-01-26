@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 
 import CheckImg from "./check-img";
 import { Text, Flex } from "../../../global-components/std-components";
-import { useStrings } from "../../../../libs/fusion/fusion-context";
+import { useStrings } from "../../../../libs/fusion-extension";
 
 const Thanks = props => {
   const msgs = useStrings();

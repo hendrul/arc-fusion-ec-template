@@ -5,7 +5,7 @@ import { useTheme } from "@material-ui/core/styles";
 import * as S from "./styled";
 import Button from "../../_children/button";
 import Picture from "../../../../global-components/picture";
-import { useStrings } from "../../../../../libs/fusion/fusion-context";
+import { useStrings } from "../../../../../lib/fusion-extension";
 
 const HOME = "/";
 const NAME_REDIRECT = "paywall_last_url";

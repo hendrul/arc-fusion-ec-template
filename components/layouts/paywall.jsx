@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "@material-ui/core/styles/styled";
 
-import { FusionContextProvider } from "../../libs/fusion/fusion-context";
+import { FusionContextProvider } from "../../lib/fusion-extension";
 
 const Layout = styled("div")({
   display: "flex",

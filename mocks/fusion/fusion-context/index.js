@@ -1,4 +1,4 @@
-import getProperties from "../fusion-properties";
+import getProperties from "fusion:properties";
 
 export const useFusionContext = () => {
   if (typeof window !== "undefined") {
