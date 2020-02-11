@@ -1,0 +1,34 @@
+{
+  "presets": [
+    "@babel/env",
+    "@babel/react"
+  ],
+  /** 
+  TODO: probablemente el preset "@babel/react" no sea necesario, 
+  ya que nuestro webpack no deberia estar transpilando componentes 
+  de react, sin embargo, no se si esto sea necesario al momento de 
+  implementar las pruebas unitarias. Confirmar por favor.
+
+  */
+  "plugins": [
+    [
+      "babel-plugin-macros",
+      "babel-plugin-root-import",
+      {
+        "rootPathSuffix": "./",
+        "rootPathPrefix": "~"
+      }
+    ],
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    "@babel/plugin-proposal-function-sent",
+    "@babel/plugin-proposal-export-namespace-from",
+    "@babel/plugin-proposal-numeric-separator",
+    "@babel/plugin-proposal-throw-expressions",
+    "@babel/plugin-proposal-class-properties"
+  ]
+}
