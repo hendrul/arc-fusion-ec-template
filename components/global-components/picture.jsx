@@ -1,8 +1,9 @@
+/** @jsx jsx */
 /* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "@material-ui/core/styles/styled";
-import { useTheme } from "@material-ui/core/styles";
+import { jsx } from "@emotion/core";
+import { useTheme } from "emotion-theming";
 import Url from "url-parse";
 import {
   spacing,
@@ -12,10 +13,6 @@ import {
   shadows,
   display
 } from "@material-ui/system";
-
-const NoLineHeightPicture = styled("picture")({
-  lineHeight: "0px"
-});
 
 const Picture = props => {
   const theme = useTheme();
@@ -30,7 +27,7 @@ const Picture = props => {
   }
 
   return (
-    <NoLineHeightPicture>
+    <picture css={{ lineHeight: "0px" }}>
       {(hideOnMedia || hideOnScreenSize) && (
         <source
           media={hideOnMedia || theme.breakpoints.down(hideOnScreenSize, false)}
@@ -45,7 +42,7 @@ const Picture = props => {
         />
       ))}
       <img src={srcSet[types[0]]} {...restProps} />
-    </NoLineHeightPicture>
+    </picture>
   );
 };
 
