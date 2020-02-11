@@ -1,10 +1,8 @@
 import React from "react";
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
-import { ThemeProvider as StyledThemeProvider } from "styled-components";
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
-import { colorManipulators } from "./utils";
+import { ThemeProvider } from "emotion-theming";
+import { useFusionContext } from "fusion:context";
 
-import { useFusionContext } from "../libs/fusion/fusion-context";
+import { colorManipulators } from "./utils";
 
 export default ({ app, children }) => {
   const fusionContext = useFusionContext();
@@ -29,12 +27,7 @@ export default ({ app, children }) => {
       `No ha definido un tema para el sitio web "${site}" de "${app}"`
     );
   }
-
-  return (
-    <StyledThemeProvider theme={theme}>
-      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
-    </StyledThemeProvider>
-  );
+  return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
 };
 
 /**
