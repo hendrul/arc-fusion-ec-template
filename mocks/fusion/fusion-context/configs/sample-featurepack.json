@@ -1,0 +1,14 @@
+{
+  "arcSite": "somesite",
+  "contextPath": "",
+  "globalContent": {},
+  "globalContentConfig": {},
+  "isAdmin": false,
+  "outputType": "default",
+  "requestUri": "/home/?_website=somesite&outputType=default",
+  "template": "page/p9kGju1KbU3MNr",
+  "layout": "default",
+  "key": "default",
+  "collection": "layouts",
+  "type": "default"
+}
