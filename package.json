@@ -8,7 +8,8 @@
   "scripts": {
     "fusion": "fusion",
     "start": "parcel index.html --open",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html",
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/core": "^10.0.27",
