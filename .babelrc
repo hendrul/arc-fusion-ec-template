@@ -12,7 +12,6 @@
   */
   "plugins": [
     [
-      "babel-plugin-macros",
       "babel-plugin-root-import",
       {
         "rootPathSuffix": "./",
