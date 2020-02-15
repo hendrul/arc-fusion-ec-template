@@ -57,7 +57,8 @@
     "fusion:consumer": "/mocks/fusion/fusion-consumer",
     "fusion:content": "/mocks/fusion/fusion-content",
     "fusion:properties": "/mocks/fusion/fusion-properties",
-    "fusion:environment": "/mocks/fusion/fusion-environment"
+    "fusion:environment": "/mocks/fusion/fusion-environment",
+    "@pages": "/mocks/page-builder/pages"
   },
   "keywords": [],
   "browserslist": [
