@@ -1,87 +1,100 @@
 import React from "react";
-import mapProps from "recompose/mapProps";
 import isPlainObject from "is-plain-object";
 
-const withPropSystem = function(Component, opts) {
-  let { theme, useTheme, includes, excludes, styled } =
-    opts || withPropSystem._opts;
-  const system = styled ? tryImportSystem() : undefined;
-  theme = useTheme ? useTheme : theme;
+import useMediaQuery from "./use-media-query";
 
+const mapProps = propsMapper => BaseComponent => {
+  const factory = React.createFactory(BaseComponent);
+  const WrappedComp = props => factory(propsMapper(props));
+  WrappedComp.displayName =
+    BaseComponent.displayName || BaseComponent.name || "Component";
+  return WrappedComp;
+};
+
+const withPropSystem = function(Component, _opts = {}) {
+  const opts = { ...(withPropSystem._opts || {}), ..._opts };
+  const { includes, excludes, styled, breakpoints } = opts;
   if (
     Array.isArray(includes) &&
     Array.isArray(excludes) &&
     includes.length > 0 &&
     excludes.lenght > 0
   ) {
-    // No puede agregar includes y excludes a la vezsss
+    // No puede agregar includes y excludes a la vez
     throw new Error("Only can use one of includes or excludes");
   }
+
   let Comp = Component;
-  if (!includes && system) {
-    // Excluir las propiedades de estilo de @materia-ui/system
-    // estas manejan la responsividad mediante css media queries
-    excludes = [...(excludes || []), ...system.filterProps];
+  if (styled && breakpoints) {
+    const system = tryImportSystem();
+    if (system) {
+      opts.responsiveExcludes = system.filterProps;
+      const theme = {
+        breakpoints: {
+          keys: Object.keys(breakpoints),
+          up: bp => `@media (min-width:${breakpoints[bp]}px)`
+        }
+      };
+      Comp = styled(Comp)(system);
+      // Asegurar que hay un tema con breakpoints
+      // Como lo exige @material-ui/system
+      Comp = mapProps(props => ({ theme, ...props }))(Comp);
+    }
   }
-  if (typeof styled === "function") {
-    Comp = styled(Comp)(system);
-  }
+
   // prettier-ignore
-  Comp = mapProps(props => responsivePropertyMapper(props, includes, excludes))(Comp);
-  return mapProps(props => multisitePropertyMapper({ theme, ...props }))(Comp);
+  Comp = mapProps(props => responsivePropertyMapper(props, opts))(Comp);
+  return mapProps(props => multisitePropertyMapper(props, opts))(Comp);
 };
 withPropSystem.config = opts => (withPropSystem._opts = opts);
 export default withPropSystem;
 
-const multisitePropertyMapper = props => {
-  let theme = (props || {}).theme;
-  if (typeof theme === "function") theme = theme();
-  const { sites, site } = theme || {};
+const multisitePropertyMapper = (props, opts) => {
+  let { sites, site, includes = [], excludes = [] } = opts;
   if (!sites || !site) return props;
-  const siteKeys = Object.keys(sites);
-  const siteProps = Object.values(sites);
-  if (siteKeys.length === 0) return props;
-  const siteKey = sites[site];
-  if (!siteKey) return props;
+  if (typeof sites === "function") sites = sites();
+  if (typeof site === "function") site = site();
   const newProps = {};
   for (let propKey in props) {
-    const propValue = props[propKey];
-    if (propKey === siteKey) {
-      if (isPlainObject(propValue)) {
-        Object.assign(newProps, propValue);
+    if (includes.includes(propKey) || !excludes.includes(propKey)) {
+      const propValue = props[propKey];
+      if (propKey === site) {
+        if (isPlainObject(propValue)) {
+          Object.assign(newProps, propValue);
+        } else {
+          newProps[propKey] = propValue;
+        }
+      } else if (sites.includes(propKey)) {
+        continue;
+      } else if (propValue && propValue[site]) {
+        newProps[propKey] = propValue[site];
       } else {
         newProps[propKey] = propValue;
       }
-    } else if (siteProps.includes(propKey)) {
-      continue;
-    } else if (propValue && propValue[siteKey]) {
-      newProps[propKey] = propValue[siteKey];
-    } else {
-      newProps[propKey] = propValue;
     }
   }
   return newProps;
 };
 
-const responsivePropertyMapper = (props, includes, excludes) => {
-  let theme = (props || {}).theme;
-  if (typeof theme === "function") theme = theme();
-  const breakpointKeys = ((theme || {}).breakpoints || {}).keys;
-  if (!breakpointKeys) {
-    console.warn("Can't find breakpoints key on theme");
-    return props;
-  }
-  const matches = useBreakpointMatches(theme);
+const responsivePropertyMapper = (props, opts) => {
+  let {
+    includes = [],
+    excludes = [],
+    responsiveExcludes = [],
+    breakpoints
+  } = opts;
+
+  excludes = [...excludes, ...responsiveExcludes];
+  if (!breakpoints) return props;
+  if (typeof breakpoints === "function") breakpoints = breakpoints();
+  const breakpointKeys = Object.keys(breakpoints);
+  const matches = useBreakpointMatches(breakpoints);
   const newProps = {};
   for (let propKey in props) {
     const propValue = props[propKey];
     newProps[propKey] = propValue;
     if (propValue !== undefined && propValue !== null) {
-      if (
-        (!includes && !excludes) ||
-        (includes && includes.length > 0 && includes.includes(propKey)) ||
-        (excludes && excludes.length > 0 && !excludes.includes(propKey))
-      ) {
+      if (includes.includes(propKey) || !excludes.includes(propKey)) {
         if (Array.isArray(propValue)) {
           const bpKeys = breakpointKeys.slice(0, propValue.length);
           const rbpKeys = bpKeys.slice().reverse();
@@ -126,71 +139,20 @@ const responsivePropertyMapper = (props, includes, excludes) => {
   return newProps;
 };
 
-export const useBreakpointMatches = theme => {
-  if (!theme) return {};
-  const breakpoints = (theme.breakpoints || {}).keys;
-  const up = (theme.breakpoints || {}).up;
-  if (!breakpoints) return {};
-  return breakpoints.reduce(
+export const useBreakpointMatches = breakpoints => {
+  if (!breakpoints)
+    throw new Error(
+      "You need to pass the breakpoints you defined for your app"
+    );
+  const breakpointKeys = Object.keys(breakpoints);
+  return breakpointKeys.reduce(
     (prev, bp) => ({
       ...prev,
-      [bp]: useMediaQuery(up(bp))
+      [bp]: useMediaQuery(`@media (min-width:${breakpoints[bp]}px)`)
     }),
     {}
   );
 };
-
-export function useMediaQuery(queryInput, options = {}) {
-  let query = queryInput;
-  query = query.replace(/^@media( ?)/m, "");
-
-  const supportMatchMedia =
-    typeof window !== "undefined" && typeof window.matchMedia !== "undefined";
-
-  const {
-    defaultMatches = false,
-    matchMedia = supportMatchMedia ? window.matchMedia : null,
-    noSsr = false,
-    ssrMatchMedia = null
-  } = options;
-
-  const [match, setMatch] = React.useState(() => {
-    if (noSsr && supportMatchMedia) {
-      return matchMedia(query).matches;
-    }
-    if (ssrMatchMedia) {
-      return ssrMatchMedia(query).matches;
-    }
-
-    // Once the component is mounted, we rely on the
-    // event listeners to return the correct matches value.
-    return defaultMatches;
-  });
-
-  React.useEffect(() => {
-    let active = true;
-
-    if (!supportMatchMedia) {
-      return undefined;
-    }
-
-    const queryList = matchMedia(query);
-    const updateMatch = () => {
-      // Workaround Safari wrong implementation of matchMedia
-      if (active) {
-        setMatch(queryList.matches);
-      }
-    };
-    updateMatch();
-    queryList.addListener(updateMatch);
-    return () => {
-      active = false;
-      queryList.removeListener(updateMatch);
-    };
-  }, [query, matchMedia, supportMatchMedia]);
-
-  return match;
-}
 
 function tryImportSystem() {
   try {
