@@ -1,15 +1,5 @@
 {
-  "presets": [
-    "@babel/env",
-    "@babel/react"
-  ],
-  /** 
-  TODO: probablemente el preset "@babel/react" no sea necesario, 
-  ya que nuestro webpack no deberia estar transpilando componentes 
-  de react, sin embargo, no se si esto sea necesario al momento de 
-  implementar las pruebas unitarias. Confirmar por favor.
-
-  */
+  "presets": ["@babel/env", "@babel/react"],
   "plugins": [
     [
       "babel-plugin-root-import",
