@@ -1,6 +1,7 @@
 **/.DS_Store
 **/.env
 **/.npmrc
+**/.cache
 **/node_modules
 
 /.fusion

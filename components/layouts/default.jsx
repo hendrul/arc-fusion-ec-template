@@ -1,40 +1,50 @@
+/** @jsx jsx */
 /* eslint-disable no-use-before-define */
 import React from "react";
 import PropTypes from "prop-types";
-import styled from "@emotion/styled";
+import { jsx } from "@emotion/core";
 import { useTheme } from "emotion-theming";
+import ThemeProvider from "emotion-theming";
+import { useFusionContext } from "fusion:context";
 
 import { FusionContextProvider } from "../../lib/fusion-extension";
 import ErrorBoundary from "../global-components/error-boundary";
-import propSystem from "../global-components/prop-system";
 
-propSystem.config({ useTheme, styled });
+const DefaultLayout = ({ children = [] }) => {
+  const {
+    arcSite,
+    theme
+  } = useFusionContext();
 
 const Layout = styled.div({
   display: "flex",
   justifyContent: "center"
-});
-
-const ContentContainer = styled.div(({ theme }) => ({
-  display: "flex",
-  position: "inherit",
-  width: "100%",
-  flexDirection: "column",
-  background: theme.palette.background.default
-}));
-
-const DefaultLayout = ({ children = [] }) => {
   return (
-    <FusionContextProvider featurePack="sample-featurepack" defLang="es">
-      <ErrorBoundary>
-        <Layout>
-          <ContentContainer>
-            {children[0] /* Cabecera de página */}
-            <div role="main">{children[1] /* Contenido */}</div>
-            {children[2] /* Pie de página */}
-          </ContentContainer>
-        </Layout>
-      </ErrorBoundary>
+    <FusionContextProvider>
+      <ThemeProvider theme={theme}>
+        <ErrorBoundary>
+          <div
+            css={{
+              display: "flex",
+              justifyContent: "center"
+            }}
+          >
+            <div
+              css={{
+                display: "flex",
+                position: "inherit",
+                width: "100%",
+                flexDirection: "column",
+                background: theme.palette.background.default
+              }}
+            >
+              {children[0] /* Cabecera de página */}
+              <div role="main">{children[1] /* Contenido */}</div>
+              {children[2] /* Pie de página */}
+            </div>
+          </div>
+        </ErrorBoundary>
+      </ThemeProvider>
     </FusionContextProvider>
   );
 };

@@ -1,8 +1,8 @@
 export default {
   // prettier-ignore
-  "sample-featurepack": {
+  resources: {
     images: {
-      ecBuilding: '{{contextPath}}/resources/sample-featurepack/images/ec-building.png'
+      ecBuilding: 'ec-building.png'
     }
   }
 };

@@ -52,12 +52,14 @@
     "react-test-renderer": "^16.12.0"
   },
   "alias": {
-    "fusion:context": "/mocks/fusion/fusion-context",
-    "fusion:consumer": "/mocks/fusion/fusion-consumer",
-    "fusion:content": "/mocks/fusion/fusion-content",
-    "fusion:properties": "/mocks/fusion/fusion-properties",
-    "fusion:environment": "/mocks/fusion/fusion-environment",
-    "@pages": "/mocks/page-builder/pages"
+    "fusion:context": "/mocks/fusion/context",
+    "fusion:consumer": "/mocks/fusion/consumer",
+    "fusion:content": "/mocks/fusion/content",
+    "fusion:properties": "/mocks/fusion/properties",
+    "fusion:environment": "/mocks/fusion/environment",
+    "Components": "/components",
+    "Pages": "/pages",
+    "Fusion": "/mocks/fusion"
   },
   "keywords": [],
   "browserslist": [
