@@ -3,59 +3,42 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { jsx } from "@emotion/core";
-import { useTheme } from "emotion-theming";
+import styled from "@emotion/styled";
 import Url from "url-parse";
-import {
-  spacing,
-  flexbox,
-  sizing,
-  positions,
-  shadows,
-  display
-} from "@material-ui/system";
 
-const Picture = props => {
-  const theme = useTheme();
-  const { hideOnMedia, hideOnScreenSize, srcSet = "", ...restProps } = props;
-  let types = [];
-  if (typeof srcSet === "object") {
-    types = Object.keys(srcSet);
-  } else if (typeof srcSet === "string") {
-    const { pathname } = new Url(srcSet);
-    const match = pathname.match(/\.(webp|jpg|jpeg|png|gif|svg)/);
-    if (match) types = [match[1]];
-  }
+import system from "./prop-system";
 
-  return (
-    <picture css={{ lineHeight: "0px" }}>
-      {(hideOnMedia || hideOnScreenSize) && (
-        <source
-          media={hideOnMedia || theme.breakpoints.down(hideOnScreenSize, false)}
-          srcSet="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-        />
-      )}
-      {types.map(type => (
-        <source
-          key={`source_${type}`}
-          srcSet={srcSet[type] || srcSet}
-          type={`image/${type}`}
-        />
-      ))}
-      <img src={srcSet[types[0]]} {...restProps} />
-    </picture>
-  );
-};
+const Picture = system(
+  props => {
+    const { hidden, srcSet = "", ...restProps } = props;
 
-const StyledPicture = styled(Picture)(
-  spacing,
-  flexbox,
-  sizing,
-  positions,
-  shadows,
-  display
+    let types = [];
+    if (typeof srcSet === "object") {
+      types = Object.keys(srcSet);
+    } else if (typeof srcSet === "string") {
+      const { pathname } = new Url(srcSet);
+      const match = pathname.match(/\.(webp|jpg|jpeg|png|gif|svg)/);
+      if (match) types = [match[1]];
+    }
+    return (
+      !hidden && (
+        <picture css={{ lineHeight: "0px" }}>
+          {types.map(type => (
+            <source
+              key={`source_${type}`}
+              srcSet={srcSet[type] || srcSet}
+              type={`image/${type}`}
+            />
+          ))}
+          <img src={srcSet[types[0]]} {...restProps} />
+        </picture>
+      )
+    );
+  },
+  { styled }
 );
 
-StyledPicture.propTypes = {
+Picture.propTypes = {
   /**
    * Conjunto de urls para cada formato de imagen disponible. Es un objeto
    * donde cada atributo es un formato de imagen y su valor es la uri para
@@ -75,18 +58,6 @@ StyledPicture.propTypes = {
   ]),
 
   /**
-   * No mostrar en pantallas con tamaño igual o menor al breakpoint
-   * especificado (xs, sm, md, lg, xl)
-   */
-  hideOnScreenSize: PropTypes.string,
-
-  /**
-   * No mostrar en pantallas con tamaño igual o menor al media query
-   * especificado
-   */
-  hideOnMedia: PropTypes.string,
-
-  /**
    * Altura de la imagen. Esta propiedad es responsiva y soporta los
    * breakpoints (xs, sm, md, lg, xl)
    */
@@ -104,4 +75,4 @@ StyledPicture.propTypes = {
   alt: PropTypes.string
 };
 
-export default StyledPicture;
+export default Picture;

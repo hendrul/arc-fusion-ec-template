@@ -50,7 +50,10 @@ withPropSystem.config = opts => (withPropSystem._opts = opts);
 export default withPropSystem;
 
 const multisitePropertyMapper = (props, opts) => {
-  let { sites, site, includes = [], excludes = [] } = opts;
+  let { sites, site, includes = [], excludes = [] } = Object.assign(
+    withPropSystem._opts,
+    opts
+  );
   if (!sites || !site) return props;
   if (typeof sites === "function") sites = sites();
   if (typeof site === "function") site = site();
@@ -82,14 +85,16 @@ const responsivePropertyMapper = (props, opts) => {
     excludes = [],
     responsiveExcludes = [],
     breakpoints
-  } = opts;
+  } = Object.assign(withPropSystem._opts, opts);
 
   excludes = [...excludes, ...responsiveExcludes];
   if (!breakpoints) return props;
   if (typeof breakpoints === "function") breakpoints = breakpoints();
   const breakpointKeys = Object.keys(breakpoints);
   const matches = useBreakpointMatches(breakpoints);
-  const newProps = {};
+  const newProps = {
+    breakpoints: props.breakpoints || matches
+  };
   for (let propKey in props) {
     const propValue = props[propKey];
     newProps[propKey] = propValue;
