@@ -1,5 +1,5 @@
 {
-  "presets": ["@babel/env", "@babel/react"],
+  "presets": ["env", "react"],
   "plugins": [
     [
       "babel-plugin-root-import",

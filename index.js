@@ -5,9 +5,11 @@ import SamplePage from "Pages/sample-page";
 
 // Importante: Inicializar el mock de fusion
 import Fusion from "Fusion";
-Fusion.mockConfig = {
+export default { Fusion };
+const FusionAppContext = Fusion.contexts.app.Provider;
+const mockConfig = {
   arcSite: "some-site",
-  contextPath: "/pf",
+  contextPath: "",
   globalContent: {},
   globalContentConfig: {},
   isAdmin: false,
@@ -26,4 +28,9 @@ Fusion.mockConfig = {
 };
 
 const rootElement = document.getElementById("root");
-ReactDOM.render(<SamplePage />, rootElement);
+ReactDOM.render(
+  <FusionAppContext value={mockConfig}>
+    <SamplePage />
+  </FusionAppContext>,
+  rootElement
+);

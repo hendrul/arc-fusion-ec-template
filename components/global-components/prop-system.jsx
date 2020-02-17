@@ -92,9 +92,7 @@ const responsivePropertyMapper = (props, opts) => {
   if (typeof breakpoints === "function") breakpoints = breakpoints();
   const breakpointKeys = Object.keys(breakpoints);
   const matches = useBreakpointMatches(breakpoints);
-  const newProps = {
-    breakpoints: props.breakpoints || matches
-  };
+  const newProps = {};
   for (let propKey in props) {
     const propValue = props[propKey];
     newProps[propKey] = propValue;
