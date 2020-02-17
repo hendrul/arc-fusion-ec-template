@@ -21,7 +21,12 @@ function useMockContext() {
           try {
             let res = require("../../resources/**/*.*");
             const dirs = j.split("/");
-            dirs.forEach(d => (res = res[d]));
+            const file = dirs[dirs.length - 1];
+            const fileName = file.slice(0, file.lastIndexOf("."));
+            let ext = file.lastIndexOf(".");
+            ext = ext >= 0 ? file.slice(ext + 1) : undefined;
+            dirs.slice(0, -1).forEach(d => (res = res[d]));
+            res = res[fileName][ext] || res[fileName];
             return res;
           } catch (e) {}
         }

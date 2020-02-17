@@ -5,7 +5,7 @@ import SamplePage from "Pages/sample-page";
 
 // Importante: Inicializar el mock de fusion
 import Fusion from "Fusion";
-export default { Fusion };
+
 const FusionAppContext = Fusion.contexts.app.Provider;
 const mockConfig = {
   arcSite: "some-site",
