@@ -8,7 +8,7 @@ export default {
     },
     {
       name: "gestion.pe",
-      arcSite: "",
+      arcSite: "gestion",
       url: "https://gestion.pe/",
       key: "GES"
     },

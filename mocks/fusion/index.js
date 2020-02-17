@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./init";
 import _context from "./context";
 import _consumer from "./consumer";
@@ -15,5 +13,4 @@ export const consumer = _consumer;
 export const content = _content;
 export const layout = _layout;
 export const quarantine = _quarantine;
-export const static = _static;
 export const properties = _properties;

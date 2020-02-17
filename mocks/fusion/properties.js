@@ -1,12 +1,18 @@
+import merge from "lodash.merge";
+import globalProps from "../../properties";
+/* global Fusion */
+
 export default function getProperties(site) {
   const arcSite = site || Fusion.mockConfig.arcSite;
+  let siteProps = {};
   try {
-    let siteProps = require(`../../properties/sites/*.js`);
-    siteProps = siteProps[arcSite];
-    return siteProps.default || siteProps;
-  } catch (e) {
-    let siteProps = require(`../../properties/sites/${arcSite}`);
+    siteProps = require(`../../properties/sites/${arcSite}`);
     siteProps = siteProps.default || siteProps;
-    return siteProps;
+  } catch (e) {
+    siteProps = require(`../../properties/sites/*.js`);
+    siteProps = siteProps[arcSite];
+    siteProps = siteProps.default || siteProps;
   }
+
+  return merge({}, globalProps, siteProps);
 }
