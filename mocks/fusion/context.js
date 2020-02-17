@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import path from "path";
 import getProperties from "fusion:properties";
 
 /* global Fusion */
@@ -11,15 +12,18 @@ function useMockContext() {
     Fusion.mockConfig = {
       ...mockConfig,
       deployment: i => {
-        const j = i.replace(mockConfig.contextPath || "");
+        const j = i
+          .replace(path.join(mockConfig.contextPath, "resources"), "")
+          .replace(/^\/|\/$/g, "");
         try {
           return require("../../resources/" + j);
         } catch (e) {
           try {
-            return require("../../resources/*.*")[j];
-          } catch (e) {
-            throw new Error(`No se encontró el recurso ${j}`);
-          }
+            let res = require("../../resources/**/*.*");
+            const dirs = j.split("/");
+            dirs.forEach(d => (res = res[d]));
+            return res;
+          } catch (e) {}
         }
       },
       metaValue: meta => (metas || {})[meta],

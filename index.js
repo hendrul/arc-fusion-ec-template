@@ -9,7 +9,7 @@ export default { Fusion };
 const FusionAppContext = Fusion.contexts.app.Provider;
 const mockConfig = {
   arcSite: "some-site",
-  contextPath: "",
+  contextPath: "/pf",
   globalContent: {},
   globalContentConfig: {},
   isAdmin: false,
